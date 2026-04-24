@@ -6,18 +6,10 @@ import { firstImageUrl } from '../lib/grouping';
 interface Props {
   parentCode: string;
   childCode: string;
-  // Valor visual del contador en modo Auditoría (separado del row real)
   auditValue: number | null;
   onAuditChange: (next: number) => void;
 }
 
-/**
- * Tarjeta de variación. PRD §5:
- * - Botones +/- de 60x60 mínimo
- * - Estado "Cambios sin guardar" reflejado visualmente (borde ámbar)
- * - En modo Auditoría, el contador visual parte de 0 y NO toca el row
- *   hasta que el usuario confirme con Guardar
- */
 export function VariationCard({ parentCode, childCode, auditValue, onAuditChange }: Props) {
   const row = useStockStore((s) => {
     const idx = s.indexByCode.get(childCode);
@@ -35,8 +27,6 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
   if (!row) return null;
 
   const savedValue = parseInt(row['Estoque'] ?? '0', 10) || 0;
-
-  // En modo Auditoría el display es auditValue; en Rápido es el valor guardado
   const displayValue = mode === 'audit' ? (auditValue ?? 0) : savedValue;
 
   function decrement() {
@@ -100,11 +90,11 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <button
           type="button"
           onClick={decrement}
-          class="min-w-fat min-h-fat w-[60px] h-[60px] rounded-xl bg-gray-100 text-gray-900 text-2xl font-bold active:bg-gray-200 active:scale-95 transition-all"
+          class="flex-shrink-0 min-h-fat w-[56px] h-[56px] rounded-xl bg-gray-100 text-gray-900 text-2xl font-bold active:bg-gray-200 active:scale-95 transition-all"
           aria-label="Restar"
         >
           −
@@ -124,7 +114,7 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
         <button
           type="button"
           onClick={increment}
-          class="min-w-fat min-h-fat w-[60px] h-[60px] rounded-xl bg-gray-900 text-white text-2xl font-bold active:bg-gray-700 active:scale-95 transition-all"
+          class="flex-shrink-0 min-h-fat w-[56px] h-[56px] rounded-xl bg-gray-900 text-white text-2xl font-bold active:bg-gray-700 active:scale-95 transition-all"
           aria-label="Sumar"
         >
           +
