@@ -109,11 +109,11 @@ export function EditorScreen() {
         </div>
       </header>
 
-      <main class="flex-1 px-3 py-4 pb-32">
+      <main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-8 pb-32">
         {filteredChildren.length === 0 && (
           <div class="p-8 text-center text-gray-400 text-sm">Sin variaciones que coincidan</div>
         )}
-        <ul class="flex flex-col gap-3">
+        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
           {filteredChildren.map((childCode) => (
             <li key={childCode}>
               <VariationCard
