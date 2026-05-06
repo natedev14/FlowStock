@@ -15,9 +15,9 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
     const idx = s.indexByCode.get(childCode);
     return idx !== undefined ? s.rows[idx] : undefined;
   });
+
   const mode = useStockStore((s) => s.mode);
   const isDirty = useStockStore((s) => s.dirtyByParent[parentCode]?.has(childCode) ?? false);
-  const bumpChildStock = useStockStore((s) => s.bumpChildStock);
   const updateChildStock = useStockStore((s) => s.updateChildStock);
 
   const parsed = useMemo(() => parseDescricao(row?.['Descrição'] ?? ''), [row]);
@@ -29,26 +29,11 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
   const savedValue = parseInt(row['Estoque'] ?? '0', 10) || 0;
   const displayValue = mode === 'audit' ? (auditValue ?? 0) : savedValue;
 
-  function decrement() {
-    if (mode === 'audit') {
-      onAuditChange(Math.max(0, (auditValue ?? 0) - 1));
-    } else {
-      bumpChildStock(parentCode, childCode, -1);
-    }
-  }
-
-  function increment() {
-    if (mode === 'audit') {
-      onAuditChange((auditValue ?? 0) + 1);
-    } else {
-      bumpChildStock(parentCode, childCode, 1);
-    }
-  }
-
   function onInput(e: Event) {
     const v = (e.target as HTMLInputElement).value;
     const n = parseInt(v, 10);
     const safe = isFinite(n) && n >= 0 ? n : 0;
+
     if (mode === 'audit') {
       onAuditChange(safe);
     } else {
@@ -63,16 +48,16 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
 
   return (
     <div
-      class={`rounded-2xl border p-4 bg-white transition-colors ${
-        isDirty ? 'border-amber-400' : 'border-gray-200'
+      class={`rounded-3xl border p-4 md:p-6 bg-white shadow-sm transition-colors ${
+        isDirty ? 'border-amber-400 bg-amber-50 ring-2 ring-amber-100' : 'border-gray-200'
       }`}
     >
-      <div class="flex items-start gap-3 mb-4">
-        <div class="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+      <div class="flex flex-col sm:flex-row gap-4 mb-5">
+        <div class="w-full sm:w-32 md:w-40 aspect-square rounded-2xl bg-gray-100 flex-shrink-0 overflow-hidden">
           {img && (
             <img
               src={img}
-              alt=""
+              alt={label}
               loading="lazy"
               class="w-full h-full object-cover"
               onError={(e) => {
@@ -81,24 +66,27 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
             />
           )}
         </div>
+
         <div class="flex-1 min-w-0">
           <p class="text-xs text-gray-400 font-mono">{childCode}</p>
-          <p class="text-sm font-semibold text-gray-900 leading-tight">{label}</p>
-          <p class="text-xs text-gray-400 mt-1">
-            Actual: <span class="font-mono">{savedValue}</span>
+
+          <p class="text-base md:text-lg font-semibold text-gray-900 leading-tight mt-1">
+            {label}
+          </p>
+
+          <p class="text-sm text-gray-500 mt-2">
+            Stock actual:{' '}
+            <span class="font-mono font-semibold text-gray-900">
+              {savedValue}
+            </span>
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={decrement}
-          class="flex-shrink-0 min-h-fat w-[56px] h-[56px] rounded-xl bg-gray-100 text-gray-900 text-2xl font-bold active:bg-gray-200 active:scale-95 transition-all"
-          aria-label="Restar"
-        >
-          −
-        </button>
+      <div class="flex flex-col gap-2">
+        <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Conteo físico
+        </label>
 
         <input
           type="number"
@@ -108,17 +96,12 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
           step="1"
           value={String(displayValue)}
           onInput={onInput}
-          class="flex-1 min-h-fat text-center text-2xl font-bold text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-gray-900 focus:outline-none"
+          class={`w-full min-h-fat text-center text-3xl md:text-4xl font-bold rounded-2xl border-2 bg-white focus:outline-none focus:ring-4 ${
+            isDirty
+              ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-100'
+              : 'border-gray-200 focus:border-blue-600 focus:ring-blue-100'
+          }`}
         />
-
-        <button
-          type="button"
-          onClick={increment}
-          class="flex-shrink-0 min-h-fat w-[56px] h-[56px] rounded-xl bg-gray-900 text-white text-2xl font-bold active:bg-gray-700 active:scale-95 transition-all"
-          aria-label="Sumar"
-        >
-          +
-        </button>
       </div>
 
       {mode === 'audit' && (
@@ -126,7 +109,7 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
           type="button"
           onClick={commitAudit}
           disabled={auditValue == null || auditValue === savedValue}
-          class="mt-3 w-full min-h-touch rounded-lg bg-gray-900 text-white text-sm font-semibold active:scale-[0.98] transition-transform disabled:opacity-30"
+          class="mt-4 w-full min-h-touch rounded-xl bg-blue-600 text-white text-sm font-semibold active:scale-[0.98] transition-transform disabled:opacity-30"
         >
           Guardar conteo
         </button>
