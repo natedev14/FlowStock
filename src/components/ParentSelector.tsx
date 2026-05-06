@@ -11,93 +11,133 @@ export function ParentSelector() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return groups;
+
+    if (!q) {
+      return groups;
+    }
+
     return groups.filter((g) => {
       if (g.parentCode.toLowerCase().includes(q)) return true;
+
       const desc = (g.parentRow['Descrição'] ?? '').toLowerCase();
       if (desc.includes(q)) return true;
-      // Buscar también en hijos (por color/talla) — PRD §7.3
-      // ej. "Rosa" o "GG" debe encontrar el padre cuyos hijos matchean
-      // Nota: acceso a rows de hijos no lo hacemos acá para evitar acoplamiento;
-      // la búsqueda por variación queda dentro del padre ya abierto.
+
       return false;
     });
   }, [groups, search]);
 
   return (
-    <div class="flex flex-col h-screen bg-white">
-      {/* Header */}
-      <header class="sticky top-0 bg-white border-b border-gray-100 px-4 pt-4 pb-3 z-10">
-        <div class="flex items-center justify-between mb-3">
-          <h1 class="text-xl font-bold text-gray-900">Modelos</h1>
-          <button
-            type="button"
-            onClick={() => useStockStore.getState().reset()}
-            class="text-sm text-gray-500 min-h-touch min-w-touch px-2"
-            aria-label="Cargar otro archivo"
-          >
-            Nuevo
-          </button>
+    <div class="flex min-h-screen flex-col bg-slate-50">
+      <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto w-full max-w-7xl px-4 py-4 md:px-8">
+          <div class="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                Conteo de estoque
+              </p>
+              <h1 class="text-2xl font-bold text-gray-900">
+                Productos
+              </h1>
+              <p class="mt-1 text-sm text-gray-500">
+                {groups.length} {groups.length === 1 ? 'modelo cargado' : 'modelos cargados'}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => useStockStore.getState().reset()}
+              class="min-h-touch rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm active:scale-[0.98]"
+              aria-label="Cargar otro archivo"
+            >
+              Nuevo CSV
+            </button>
+          </div>
+
+          <input
+            type="search"
+            inputMode="search"
+            placeholder="Buscar por código o descripción"
+            value={search}
+            onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
+            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
         </div>
-        <input
-          type="search"
-          inputMode="search"
-          placeholder="Buscar por código o descripción"
-          value={search}
-          onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-          class="w-full min-h-touch px-4 rounded-xl bg-gray-100 text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-gray-900 focus:outline-none"
-        />
       </header>
 
-      {/* Lista */}
-      <div class="flex-1 overflow-y-auto">
+      <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 md:px-8 md:py-8">
         {filtered.length === 0 && (
-          <div class="p-8 text-center text-gray-400 text-sm">Sin resultados</div>
+          <div class="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">
+            Sin resultados
+          </div>
         )}
-        <ul class="divide-y divide-gray-100">
+
+        <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((g) => {
             const img = firstImageUrl(g.parentRow);
             const desc = g.parentRow['Descrição'] ?? '';
-            const isDirty = (dirty[g.parentCode]?.size ?? 0) > 0;
+            const changedCount = dirty[g.parentCode]?.size ?? 0;
+            const isDirty = changedCount > 0;
+
             return (
               <li key={g.parentCode}>
                 <button
                   type="button"
                   onClick={() => setActive(g.parentCode)}
-                  class="w-full flex items-center gap-3 px-4 py-3 text-left active:bg-gray-50 min-h-fat"
+                  class={`group w-full overflow-hidden rounded-3xl border bg-white text-left shadow-sm transition active:scale-[0.99] ${
+                    isDirty
+                      ? 'border-amber-400 ring-2 ring-amber-100'
+                      : 'border-gray-200 hover:border-blue-300'
+                  }`}
                 >
-                  <div class="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+                  <div class="aspect-[4/3] w-full bg-gray-100">
                     {img && (
                       <img
                         src={img}
-                        alt=""
+                        alt={desc || g.parentCode}
                         loading="lazy"
-                        class="w-full h-full object-cover"
+                        class="h-full w-full object-cover transition group-hover:scale-[1.02]"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}
                       />
                     )}
                   </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold text-gray-900">{g.parentCode}</span>
+
+                  <div class="p-4">
+                    <div class="mb-2 flex items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
+                          {g.parentCode}
+                        </p>
+                        <h2 class="mt-1 line-clamp-2 text-base font-bold text-gray-900">
+                          {desc}
+                        </h2>
+                      </div>
+
+                      <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl text-blue-600">
+                        ›
+                      </span>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                      <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                        {g.childCodes.length}{' '}
+                        {g.childCodes.length === 1 ? 'variación' : 'variaciones'}
+                      </span>
+
                       {isDirty && (
-                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500" aria-label="Cambios sin guardar" />
+                        <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                          {changedCount} editadas
+                        </span>
                       )}
                     </div>
-                    <p class="text-sm text-gray-500 truncate">{desc}</p>
-                    <p class="text-xs text-gray-400 mt-0.5">
-                      {g.childCodes.length} {g.childCodes.length === 1 ? 'variación' : 'variaciones'}
-                    </p>
                   </div>
-                  <span class="text-gray-300 text-xl" aria-hidden="true">›</span>
                 </button>
               </li>
             );
           })}
         </ul>
-      </div>
+      </main>
     </div>
   );
 }
