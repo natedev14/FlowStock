@@ -6,17 +6,14 @@ import { firstImageUrl } from '../lib/grouping';
 interface Props {
   parentCode: string;
   childCode: string;
-  auditValue: number | null;
-  onAuditChange: (next: number) => void;
 }
 
-export function VariationCard({ parentCode, childCode, auditValue, onAuditChange }: Props) {
+export function VariationCard({ parentCode, childCode }: Props) {
   const row = useStockStore((s) => {
     const idx = s.indexByCode.get(childCode);
     return idx !== undefined ? s.rows[idx] : undefined;
   });
 
-  const mode = useStockStore((s) => s.mode);
   const isDirty = useStockStore((s) => s.dirtyByParent[parentCode]?.has(childCode) ?? false);
   const updateChildStock = useStockStore((s) => s.updateChildStock);
 
@@ -27,23 +24,13 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
   if (!row) return null;
 
   const savedValue = parseInt(row['Estoque'] ?? '0', 10) || 0;
-  const displayValue = mode === 'audit' ? (auditValue ?? 0) : savedValue;
 
   function onInput(e: Event) {
-    const v = (e.target as HTMLInputElement).value;
-    const n = parseInt(v, 10);
-    const safe = isFinite(n) && n >= 0 ? n : 0;
+    const value = (e.target as HTMLInputElement).value;
+    const parsedValue = parseInt(value, 10);
+    const safeValue = isFinite(parsedValue) && parsedValue >= 0 ? parsedValue : 0;
 
-    if (mode === 'audit') {
-      onAuditChange(safe);
-    } else {
-      updateChildStock(parentCode, childCode, String(safe));
-    }
-  }
-
-  function commitAudit() {
-    if (mode !== 'audit' || auditValue == null) return;
-    updateChildStock(parentCode, childCode, String(auditValue));
+    updateChildStock(parentCode, childCode, String(safeValue));
   }
 
   return (
@@ -94,7 +81,7 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
           pattern="[0-9]*"
           min="0"
           step="1"
-          value={String(displayValue)}
+          value={String(savedValue)}
           onInput={onInput}
           class={`w-full min-h-fat text-center text-3xl md:text-4xl font-bold rounded-2xl border-2 bg-white focus:outline-none focus:ring-4 ${
             isDirty
@@ -103,17 +90,6 @@ export function VariationCard({ parentCode, childCode, auditValue, onAuditChange
           }`}
         />
       </div>
-
-      {mode === 'audit' && (
-        <button
-          type="button"
-          onClick={commitAudit}
-          disabled={auditValue == null || auditValue === savedValue}
-          class="mt-4 w-full min-h-touch rounded-xl bg-blue-600 text-white text-sm font-semibold active:scale-[0.98] transition-transform disabled:opacity-30"
-        >
-          Guardar conteo
-        </button>
-      )}
     </div>
   );
 }
