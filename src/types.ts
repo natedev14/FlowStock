@@ -14,8 +14,6 @@ export interface ParentGroup {
   childCodes: string[];        // "Código" de cada hijo, en orden original
 }
 
-export type Mode = 'quick' | 'audit';
-
 export interface ParsedDescricao {
   cor?: string;
   tamanho?: string;
@@ -28,7 +26,6 @@ export interface ParsedDescricao {
 export interface StoredSession {
   parentCode: string;
   savedAt: number;             // epoch ms
-  mode: Mode;
   // childCode -> valor de Estoque en string tal como se exportará
   estoqueOverrides: Record<string, string>;
   // Qué hijos han sido modificados desde que se cargó el CSV
