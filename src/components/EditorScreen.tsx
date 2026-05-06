@@ -67,7 +67,7 @@ export function EditorScreen() {
   return (
     <div class="flex flex-col min-h-screen bg-gray-50">
       <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
-        <div class="flex items-center gap-3 px-3 py-3">
+        <div class="w-full max-w-7xl mx-auto flex items-center gap-4 px-4 md:px-8 py-4">
           <button
             type="button"
             onClick={() => {
@@ -79,7 +79,7 @@ export function EditorScreen() {
           >
             ‹
           </button>
-          <div class="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+          <div class="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0">
             {parentImg && (
               <img
                 src={parentImg}
@@ -96,7 +96,7 @@ export function EditorScreen() {
             <p class="text-xs text-gray-500 truncate">{parentRow['Descrição']}</p>
           </div>
         </div>
-        <div class="px-3 pb-3 flex flex-col gap-3">
+        <div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 flex flex-col md:flex-row gap-3">
           <ModeToggle />
           <input
             type="search"
@@ -104,7 +104,7 @@ export function EditorScreen() {
             placeholder='Buscar variación (ej. "Rosa", "GG")'
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
-            class="w-full min-h-touch px-4 rounded-xl bg-gray-100 text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-gray-900 focus:outline-none"
+            class="w-full min-h-touch px-4 rounded-xl bg-gray-100 text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-blue-600 focus:outline-none"
           />
         </div>
       </header>
