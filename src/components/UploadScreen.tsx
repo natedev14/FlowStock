@@ -102,15 +102,6 @@ export function UploadScreen() {
               </div>
             )}
 
-            <div class="rounded-2xl border border-rose-100 bg-rose-50/60 p-4">
-              <p class="text-sm font-semibold text-gray-900">
-                Seguro y local
-              </p>
-              <p class="mt-1 text-xs leading-5 text-gray-500">
-                El archivo se lee en este navegador. No se sube a ningún servidor.
-              </p>
-            </div>
-
             <p class="text-center text-xs text-gray-400">
               Desarrollado por Natev
             </p>
