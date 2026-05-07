@@ -68,7 +68,7 @@ export function EditorScreen() {
 
   return (
     <div class="flex min-h-screen flex-col bg-white">
-      <header class="sticky top-0 z-10 border-b border-gray-100 bg-white/95 backdrop-blur">
+      <header class="sticky top-0 z-20 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 md:px-8">
           <button
             type="button"
@@ -122,7 +122,7 @@ export function EditorScreen() {
         </div>
       </header>
 
-      <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-32 md:px-8 md:py-8">
+      <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-40 md:px-8 md:py-8 md:pb-36">
         {filteredChildren.length === 0 ? (
           <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
             Sin variaciones que coincidan
@@ -132,7 +132,7 @@ export function EditorScreen() {
         )}
       </main>
 
-      <footer class="fixed inset-x-0 bottom-0 border-t border-gray-200 bg-white px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+      <footer class="fixed inset-x-0 bottom-0 z-20 border-t border-gray-200 bg-white px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
         <div class="mx-auto flex w-full max-w-7xl justify-center md:justify-end">
           <div class="w-full md:max-w-md">
             <ExportButton />
