@@ -1,105 +1,296 @@
-# Gissary Stock Editor (PWA)
+# Gissary Stock Editor
 
-App web estática para edición de inventario físico de Gissary Modas a partir de CSVs de Bling ERP.
+App web estática para **conteo visual de estoque** de productos de Gissary Modas a partir de CSVs exportados desde Bling ERP.
+
+La app permite cargar un CSV de productos, ver los modelos de forma visual, contar stock por **color y talla**, editar cantidades desde una matriz intuitiva y exportar un CSV listo para reimportar en Bling.
+
+No usa backend, base de datos ni servidor propio. Todo corre en el navegador.
+
+## Objetivo
+
+Reducir la fricción de contar inventario físico de ropa.
+
+En vez de editar un CSV manualmente, la app transforma el archivo de Bling en una interfaz visual:
+
+```txt
+CSV de Bling
+  ↓
+Productos con imagen
+  ↓
+Matriz Color × Talla
+  ↓
+Conteo físico editable
+  ↓
+CSV corregido para Bling
+```
+
+## Funcionalidades principales
+
+- Carga de CSV de productos exportado desde Bling.
+- Validación de columnas mínimas necesarias.
+- Agrupación automática de producto padre y variaciones.
+- Selector visual de productos con imagen, descripción y cantidad de variaciones.
+- Editor en matriz **Color × Talla**.
+- Inputs grandes para conteo físico.
+- Imagen por color con opción de ampliar en pantalla completa.
+- Búsqueda por color, talla, SKU o descripción.
+- Marcado visual de cantidades modificadas.
+- Autosave local por producto padre.
+- Exportación de CSV compatible con Bling.
+- Procesamiento 100% local en el navegador.
 
 ## Stack
 
 - **Build**: Vite
 - **Framework**: Preact + TypeScript
-- **Estado**: Zustand (con persistencia localStorage por SKU padre)
+- **Estado**: Zustand
 - **CSV**: PapaParse
 - **Validación**: Zod
-- **Estilos**: Tailwind CSS (mobile-first, botones táctiles ≥44px)
+- **Estilos**: Tailwind CSS
 - **PWA**: vite-plugin-pwa
+- **Deploy**: GitHub Pages + GitHub Actions
 
-## Setup
+## Setup local
 
 ```bash
 npm install
 npm run dev      # desarrollo local en http://localhost:5173
-npm run build    # genera dist/ listo para GitHub Pages
-npm run preview  # sirve dist/ localmente para probar antes de publicar
+npm run build    # genera dist/
+npm run preview  # sirve dist/ localmente
 ```
 
-## Despliegue en GitHub Pages
+## Deploy
 
-1. Creá el repo `gissary-stock-editor` en GitHub.
-2. En `vite.config.ts` cambiá `base: './'` por `base: '/gissary-stock-editor/'` si el repo no es user.github.io.
-3. Primer deploy:
-   ```bash
-   npm run build
-   npm run deploy:gh    # usa gh-pages, empuja dist/ a la rama gh-pages
-   ```
-4. En Settings → Pages del repo: Source = branch `gh-pages` / root.
+El deploy se ejecuta automáticamente con GitHub Actions al hacer push a `main`.
+
+Workflow:
+
+```txt
+.github/workflows/deploy.yml
+```
+
+El workflow hace:
+
+```txt
+checkout
+setup-node
+npm install
+npm run build
+upload-pages-artifact
+ deploy-pages
+```
+
+La app publicada usa la base configurada en Vite:
+
+```ts
+base: '/gissary-stock-editor/'
+```
+
+URL pública:
+
+```txt
+https://natedev14.github.io/gissary-stock-editor/
+```
 
 ## Flujo de uso
 
-1. Abrir la app en el móvil → **Cargar Modelo** → seleccionar CSV de Bling.
-2. Lista de modelos padre con imagen, descripción y contador de variaciones.
-3. Tap en un padre → editor de variaciones.
-4. **Modo Ajuste Rápido**: +/- modifica el stock actual directamente.
-5. **Modo Auditoría**: contador visual parte de 0; el operario cuenta físicamente, luego toca "Guardar conteo" y sobrescribe.
-6. Búsqueda rápida dentro del padre (ej. "Rosa", "GG").
-7. **Exportar CSV** → archivo listo para re-importar a Bling.
+1. Abrir la app.
+2. Seleccionar el CSV exportado desde Bling.
+3. Ver la lista de productos/modelos cargados.
+4. Abrir un producto.
+5. Contar stock en la matriz **Color × Talla**.
+6. Tocar una imagen para verla ampliada si hace falta confirmar el color/prenda.
+7. Editar cantidades directamente en los inputs.
+8. Exportar el CSV corregido.
+9. Reimportar el CSV en Bling.
 
-## Decisiones técnicas importantes
+## Formato esperado del CSV
 
-### Fidelidad del export (R2 del PRD)
+La app espera un CSV de productos de Bling con delimitador `;` y columnas mínimas:
 
-- `meta.fields` se captura dinámicamente de PapaParse al cargar el CSV. El código **no hardcodea las 59 columnas** — si Bling agrega una nueva columna en el futuro, la app la pasará sin tocar nada.
-- `quotes: true` global en el export. Protege precios con comas (`"16,99"`), HTML en `Descrição Complementar` y cualquier celda problemática. El archivo queda ~10% más grande a cambio de cero bugs de desplazamiento de columnas.
-- Line endings `\r\n` + BOM UTF-8 al inicio. Replica el formato exacto que genera Bling, para máxima compatibilidad en el re-import.
-- Los valores de celda nunca son mutados salvo en la columna `Estoque`. Incluso tabs o espacios "raros" del archivo original se preservan.
-
-### Persistencia (R3 del PRD)
-
-- Cada padre tiene su sesión propia en `localStorage` bajo `gissary_session_${parentCode}`.
-- Se guarda solo el delta (`estoqueOverrides`), no el CSV completo — evita cuota llena.
-- **Al cargar un nuevo CSV se borran TODAS las sesiones previas** (decisión explícita para evitar datos viejos mezclados con stock nuevo).
-- Autosave debounced a 300ms por cambio.
-
-### UX fat-finger (§5 del PRD)
-
-- Botones +/- de 60×60px, todos los tappables ≥44px.
-- Input nativo `type="file"` oculto; se dispara desde un botón grande "Cargar Modelo".
-- Borde ámbar en tarjetas con cambios sin guardar + badge en lista de padres.
-- Sin decoración visual innecesaria; paleta gris + blanco, altos contrastes.
-
-### Formatos numéricos (§6 del PRD)
-
-- `Estoque` se trata como integer ≥0 en la UI.
-- Valores como `"10.0"` o `"10,0"` se normalizan al leer, pero no tocamos el resto del CSV.
-- Contador no baja de 0.
-
-## Estructura
-
+```txt
+Código
+Código Pai
+Descrição
+Estoque
+URL Imagens Externas
 ```
+
+La app no hardcodea todas las columnas del CSV. Al cargar el archivo, captura dinámicamente `meta.fields` desde PapaParse y usa ese orden como fuente de verdad para exportar.
+
+## Matriz Color × Talla
+
+Las variaciones se organizan usando el campo `Descrição`.
+
+Formato esperado en variaciones:
+
+```txt
+COR:Azul Escuro;TAMANHO:G
+COR:Branco;TAMANHO:GG
+COR:Preto;TAMANHO:M
+```
+
+La app extrae:
+
+```txt
+COR      → color de la fila
+TAMANHO  → columna de talla
+```
+
+Ejemplo visual:
+
+```txt
+Color / Talla       M      G      GG
+Amarelo Manteiga   [0]    [0]    [0]
+Azul Escuro        [9]    [8]    [0]
+Branco             [5]   [33]   [31]
+Preto              [0]   [30]   [60]
+```
+
+Cada celda actualiza el campo `Estoque` de la variación correspondiente.
+
+## Imágenes
+
+La app usa `URL Imagens Externas` para mostrar imágenes de productos y variaciones.
+
+En el editor:
+
+- Cada color muestra una imagen pequeña.
+- Al tocar/clicar la imagen, se abre un visor en pantalla completa.
+- Las imágenes se muestran con `object-contain` para evitar recortar la prenda.
+
+## Exportación CSV
+
+La exportación está pensada para volver a Bling con el mínimo cambio posible.
+
+Reglas actuales:
+
+- Se preserva el orden original de columnas usando `meta.fields`.
+- Se preserva el orden original de filas.
+- Se exporta con delimitador `;`.
+- Se usa `quotes: true` para proteger celdas con comas, HTML o caracteres especiales.
+- Se usa `\r\n` como salto de línea.
+- Se agrega BOM UTF-8 al inicio.
+- Solo se modifica la columna `Estoque`.
+- `Estoque` se exporta en formato compatible con Bling: `10,00`, `0,00`, `35,00`.
+
+Ejemplo:
+
+```txt
+UI:       8
+Export:   8,00
+```
+
+## Persistencia local
+
+La app guarda cambios en `localStorage` por producto padre.
+
+Características:
+
+- No guarda el CSV completo.
+- Guarda overrides de `Estoque` por variación.
+- Guarda qué variaciones fueron modificadas.
+- Al cargar un nuevo CSV, se limpian las sesiones anteriores para evitar mezclar datos viejos.
+- No se envía información a ningún servidor.
+
+## Privacidad
+
+Todo ocurre localmente en el navegador:
+
+```txt
+El CSV no se sube a un backend.
+No hay base de datos.
+No hay APIs externas.
+No hay servidor propio.
+```
+
+Esto reduce costo, complejidad y riesgo operativo.
+
+## Estructura del proyecto
+
+```txt
 src/
 ├── main.tsx
 ├── app.tsx                     # Router entre Upload/Selector/Editor
-├── index.css                   # Tailwind + reset mobile
-├── types.ts                    # CsvRow, ParentGroup, StoredSession
-├── schema.ts                   # Zod para columnas obligatorias
+├── index.css                   # Tailwind + ajustes mobile
+├── types.ts                    # CsvRow, CsvMeta, ParentGroup, StoredSession
+├── schema.ts                   # Validación de columnas obligatorias
 ├── lib/
-│   ├── csv.ts                  # parseCsv + exportCsv con BOM y CRLF
+│   ├── csv.ts                  # parseCsv + exportCsv
 │   ├── grouping.ts             # buildGroups + firstImageUrl
-│   ├── parseDescricao.ts       # "COR:X;TAMANHO:Y" → estructurado
+│   ├── parseDescricao.ts       # COR/TAMANHO → objeto estructurado
 │   └── storage.ts              # localStorage por parentCode
 ├── store/
-│   └── useStockStore.ts        # Estado central + autosave debounced
+│   └── useStockStore.ts        # Estado global + acciones de stock
 └── components/
-    ├── UploadScreen.tsx        # Pantalla inicial
-    ├── ParentSelector.tsx      # Lista de modelos
-    ├── EditorScreen.tsx        # Editor de un padre
-    ├── ModeToggle.tsx          # Ajuste Rápido / Auditoría
-    ├── VariationCard.tsx       # Tarjeta fat-finger
-    └── ExportButton.tsx        # Descarga CSV
+    ├── UploadScreen.tsx        # Carga inicial del CSV
+    ├── ParentSelector.tsx      # Selector visual de productos
+    ├── EditorScreen.tsx        # Pantalla de conteo
+    ├── StockMatrix.tsx         # Matriz Color × Talla
+    ├── VariationCard.tsx       # Tarjeta de variación legacy/respaldo
+    └── ExportButton.tsx        # Exportación del CSV
 ```
+
+## Decisiones de producto
+
+### Sin backend
+
+La app no necesita servidor para resolver el problema actual. El flujo completo puede ejecutarse en el navegador: parsear CSV, editar, persistir localmente y exportar.
+
+### Sin modos de edición
+
+Se eliminó la división entre “Ajuste Rápido” y “Auditoría”. El flujo actual es único:
+
+```txt
+Ver stock actual → escribir conteo físico → exportar
+```
+
+Menos decisiones para el usuario, menos riesgo operativo.
+
+### Matriz en vez de lista
+
+Para ropa, el stock se entiende mejor como combinación de color y talla. Por eso el editor principal usa una matriz **Color × Talla** en lugar de una lista larga de SKUs.
+
+### Imágenes ampliables
+
+El conteo es visual. La imagen ayuda a reconocer color/modelo y reduce errores al contar.
 
 ## Validación
 
-El archivo se rechaza con mensaje "Archivo de ERP no compatible" si falta alguna de estas columnas: `Código`, `Código Pai`, `Descrição`, `Estoque`, `URL Imagens Externas`.
+El archivo se rechaza si faltan columnas críticas:
 
-## Nota para el desarrollador
+```txt
+Código
+Código Pai
+Descrição
+Estoque
+URL Imagens Externas
+```
 
-La fidelidad del archivo de salida es la prioridad #1. Cualquier PR que modifique `lib/csv.ts` debe ejecutarse con round-trip test — cargar un CSV real de Bling, exportarlo sin cambios y diff-earlo contra el original. Las únicas diferencias aceptables son las celdas con valores modificados por el usuario.
+Mensaje esperado:
+
+```txt
+Archivo de ERP no compatible. Faltan columnas: ...
+```
+
+## Limitaciones conocidas
+
+- La matriz depende de que las variaciones usen descripciones con `COR:` y `TAMANHO:`.
+- Si un CSV viene con otro patrón de descripción, esas variaciones pueden agruparse como `Sin color` o `ÚNICO`.
+- La app no se conecta directamente a Bling; trabaja con CSV manual.
+- No hay control multiusuario porque todo es local.
+
+## Recomendación de prueba antes de usar en producción
+
+Para cada cambio importante en `lib/csv.ts` o en el store:
+
+1. Cargar un CSV real de Bling.
+2. Exportar sin modificar nada.
+3. Comparar columnas, filas y valores.
+4. Editar 2 o 3 stocks.
+5. Exportar de nuevo.
+6. Confirmar que solo cambió `Estoque`.
+
+## Estado actual
+
+MVP funcional para conteo visual de stock desde CSV de Bling, optimizado para uso rápido en navegador, sin backend y con exportación compatible con Bling.
