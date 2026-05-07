@@ -37,15 +37,9 @@ export function EditorScreen() {
       if (idx === undefined) return false;
 
       const row = rows[idx];
-      const desc = (row['Descrição'] ?? '').toLowerCase();
       const parsed = parseDescricao(row['Descrição'] ?? '');
 
-      if (code.toLowerCase().includes(q)) return true;
-      if (desc.includes(q)) return true;
-      if (parsed.cor?.toLowerCase().includes(q)) return true;
-      if (parsed.tamanho?.toLowerCase().includes(q)) return true;
-
-      return false;
+      return parsed.cor?.toLowerCase().includes(q) ?? false;
     });
   }, [group, searchVar, rows, indexByCode]);
 
@@ -114,7 +108,7 @@ export function EditorScreen() {
           <input
             type="search"
             inputMode="search"
-            placeholder="Buscar color, talla o SKU"
+            placeholder="Buscar color"
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
             class="min-h-touch w-full rounded-xl border-0 bg-rose-50/60 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-300"
@@ -125,7 +119,7 @@ export function EditorScreen() {
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 md:px-8 md:py-8">
         {filteredChildren.length === 0 ? (
           <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
-            Sin resultados
+            Sin colores que coincidan
           </div>
         ) : (
           <StockMatrix parentCode={group.parentCode} childCodes={filteredChildren} />
