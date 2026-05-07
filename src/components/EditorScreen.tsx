@@ -51,7 +51,7 @@ export function EditorScreen() {
 
   if (!group || !parentRow) {
     return (
-      <div class="min-h-screen flex items-center justify-center bg-slate-50 p-6 text-center text-gray-500">
+      <div class="min-h-screen flex items-center justify-center bg-white p-6 text-center text-gray-500">
         <div>
           <p class="mb-4">Modelo no encontrado.</p>
           <button
@@ -67,8 +67,8 @@ export function EditorScreen() {
   }
 
   return (
-    <div class="flex min-h-screen flex-col bg-slate-50">
-      <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+    <div class="flex min-h-screen flex-col bg-white">
+      <header class="sticky top-0 z-10 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 md:px-8">
           <button
             type="button"
@@ -96,7 +96,7 @@ export function EditorScreen() {
           </div>
 
           <div class="min-w-0 flex-1">
-            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
+            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-gray-500">
               {group.parentCode}
             </p>
 
@@ -117,14 +117,14 @@ export function EditorScreen() {
             placeholder='Buscar color, talla o SKU (ej. "Rosa", "GG")'
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
-            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
         </div>
       </header>
 
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-32 md:px-8 md:py-8">
         {filteredChildren.length === 0 && (
-          <div class="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">
+          <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
             Sin variaciones que coincidan
           </div>
         )}

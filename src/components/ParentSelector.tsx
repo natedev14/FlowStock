@@ -27,12 +27,12 @@ export function ParentSelector() {
   }, [groups, search]);
 
   return (
-    <div class="flex min-h-screen flex-col bg-slate-50">
-      <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+    <div class="flex min-h-screen flex-col bg-white">
+      <header class="sticky top-0 z-10 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div class="mx-auto w-full max-w-7xl px-4 py-4 md:px-8">
           <div class="mb-4 flex items-center justify-between gap-4">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
+              <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">
                 Conteo de estoque
               </p>
               <h1 class="text-2xl font-bold text-gray-900">
@@ -43,12 +43,12 @@ export function ParentSelector() {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => useStockStore.getState().reset()}
-              class="min-h-touch rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm active:scale-[0.98]"
-              aria-label="Cargar otro archivo"
-            >
+              <button
+                type="button"
+                onClick={() => useStockStore.getState().reset()}
+                class="min-h-touch rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 active:scale-[0.98]"
+                aria-label="Cargar otro archivo"
+              >
               Nuevo CSV
             </button>
           </div>
@@ -59,7 +59,7 @@ export function ParentSelector() {
             placeholder="Buscar por código o descripción"
             value={search}
             onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
         </div>
       </header>
@@ -83,10 +83,10 @@ export function ParentSelector() {
                 <button
                   type="button"
                   onClick={() => setActive(g.parentCode)}
-                  class={`group w-full overflow-hidden rounded-3xl border bg-white text-left shadow-sm transition active:scale-[0.99] ${
+                  class={`group w-full overflow-hidden rounded-3xl border bg-white text-left transition active:scale-[0.99] ${
                     isDirty
-                      ? 'border-amber-400 ring-2 ring-amber-100'
-                      : 'border-gray-200 hover:border-blue-300'
+                      ? 'border-amber-300 bg-amber-50/40'
+                      : 'border-gray-100 hover:border-gray-300'
                   }`}
                 >
                   <div class="aspect-[4/3] w-full bg-gray-100">
@@ -106,7 +106,7 @@ export function ParentSelector() {
                   <div class="p-4">
                     <div class="mb-2 flex items-start justify-between gap-3">
                       <div class="min-w-0">
-                        <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
+                        <p class="font-mono text-xs font-semibold uppercase tracking-wide text-gray-500">
                           {g.parentCode}
                         </p>
                         <h2 class="mt-1 line-clamp-2 text-base font-bold text-gray-900">
@@ -114,7 +114,7 @@ export function ParentSelector() {
                         </h2>
                       </div>
 
-                      <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl text-blue-600">
+                      <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl text-gray-500">
                         ›
                       </span>
                     </div>
