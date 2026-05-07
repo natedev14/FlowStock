@@ -28,7 +28,7 @@ export function ParentSelector() {
 
   return (
     <div class="flex min-h-screen flex-col bg-slate-50">
-      <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+      <header class="sticky top-0 z-10 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div class="mx-auto w-full max-w-7xl px-4 py-4 md:px-8">
           <div class="mb-4 flex items-center justify-between gap-4">
             <div>
@@ -43,12 +43,12 @@ export function ParentSelector() {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => useStockStore.getState().reset()}
-              class="min-h-touch rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm active:scale-[0.98]"
-              aria-label="Cargar otro archivo"
-            >
+              <button
+                type="button"
+                onClick={() => useStockStore.getState().reset()}
+                class="min-h-touch rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 active:scale-[0.98]"
+                aria-label="Cargar otro archivo"
+              >
               Nuevo CSV
             </button>
           </div>
@@ -59,7 +59,7 @@ export function ParentSelector() {
             placeholder="Buscar por código o descripción"
             value={search}
             onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            class="min-h-touch w-full rounded-xl border-0 bg-white px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
           />
         </div>
       </header>
@@ -83,9 +83,9 @@ export function ParentSelector() {
                 <button
                   type="button"
                   onClick={() => setActive(g.parentCode)}
-                  class={`group w-full overflow-hidden rounded-3xl border bg-white text-left shadow-sm transition active:scale-[0.99] ${
+                  class={`group w-full overflow-hidden rounded-3xl border bg-white text-left transition active:scale-[0.99] ${
                     isDirty
-                      ? 'border-amber-400 ring-2 ring-amber-100'
+                      ? 'border-amber-300 bg-amber-50/40'
                       : 'border-gray-200 hover:border-blue-300'
                   }`}
                 >

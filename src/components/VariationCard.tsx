@@ -38,8 +38,8 @@ export function VariationCard({ parentCode, childCode }: Props) {
   return (
     <>
       <div
-        class={`rounded-3xl border p-4 md:p-6 bg-white shadow-sm transition-colors ${
-          isDirty ? 'border-amber-400 bg-amber-50 ring-2 ring-amber-100' : 'border-gray-200'
+        class={`rounded-3xl border p-4 md:p-6 bg-slate-50 transition-colors ${
+          isDirty ? 'border-amber-300 bg-amber-50/40' : 'border-gray-100'
         }`}
       >
         <div class="flex flex-col sm:flex-row gap-4 mb-5">
@@ -100,7 +100,7 @@ export function VariationCard({ parentCode, childCode }: Props) {
             onInput={onInput}
             class={`w-full min-h-fat text-center text-3xl md:text-4xl font-bold rounded-2xl border-2 bg-white focus:outline-none focus:ring-4 ${
               isDirty
-                ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-100'
+                ? 'border-amber-300 focus:border-amber-400 focus:ring-amber-100'
                 : 'border-gray-200 focus:border-blue-600 focus:ring-blue-100'
             }`}
           />
