@@ -89,7 +89,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 
   return (
     <>
-      <section class="rounded-3xl border border-gray-200 bg-white shadow-sm">
+      <section class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
         <div class="border-b border-gray-100 px-4 py-4 md:px-6">
           <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
             Matriz de conteo
@@ -106,7 +106,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
           <table class="w-full border-collapse text-sm">
             <thead>
               <tr class="border-b border-gray-200 bg-slate-50">
-                <th class="sticky left-0 z-10 min-w-[220px] bg-slate-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
+                <th class="min-w-[240px] bg-slate-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
                   Color
                 </th>
                 {sizes.map((size) => (
@@ -120,7 +120,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
             <tbody>
               {colors.map((colorRow) => (
                 <tr key={colorRow.color} class="border-b border-gray-100 last:border-b-0">
-                  <td class="sticky left-0 z-10 bg-white px-4 py-3">
+                  <td class="bg-white px-4 py-3 align-middle">
                     <ColorLabel
                       color={colorRow.color}
                       image={colorRow.image}
@@ -132,7 +132,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                     const cell = colorRow.cells[size];
 
                     return (
-                      <td key={size} class="border-l border-gray-100 px-3 py-3 text-center">
+                      <td key={size} class="border-l border-gray-100 px-3 py-3 text-center align-middle">
                         {cell ? (
                           <StockInput
                             value={cell.stock}
