@@ -103,26 +103,10 @@ export const useStockStore = create<State>((set, get) => ({
   },
 
   persistActive: () => {
-    const { activeParentCode, rows, indexByCode, dirtyByParent } = get();
+    const { activeParentCode } = get();
     if (!activeParentCode) return;
 
-    const group = get().groups.find((g) => g.parentCode === activeParentCode);
-    if (!group) return;
-
-    const overrides: Record<string, string> = {};
-
-    for (const childCode of group.childCodes) {
-      const idx = indexByCode.get(childCode);
-      if (idx === undefined) continue;
-      overrides[childCode] = rows[idx]['Estoque'] ?? '0';
-    }
-
-    saveSession({
-      parentCode: activeParentCode,
-      savedAt: Date.now(),
-      estoqueOverrides: overrides,
-      dirtyChildren: Array.from(dirtyByParent[activeParentCode] ?? []),
-    });
+    persistParent(activeParentCode);
   },
 
   rehydrateActive: () => {
@@ -157,6 +141,27 @@ function sanitizeStock(raw: string): string {
   return String(Math.floor(num));
 }
 
+function persistParent(parentCode: string) {
+  const { rows, indexByCode, groups, dirtyByParent } = useStockStore.getState();
+  const group = groups.find((g) => g.parentCode === parentCode);
+  if (!group) return;
+
+  const overrides: Record<string, string> = {};
+
+  for (const childCode of group.childCodes) {
+    const idx = indexByCode.get(childCode);
+    if (idx === undefined) continue;
+    overrides[childCode] = rows[idx]['Estoque'] ?? '0';
+  }
+
+  saveSession({
+    parentCode,
+    savedAt: Date.now(),
+    estoqueOverrides: overrides,
+    dirtyChildren: Array.from(dirtyByParent[parentCode] ?? []),
+  });
+}
+
 const saveTimers = new Map<string, number>();
 
 function schedulePersist(parentCode: string) {
@@ -168,12 +173,7 @@ function schedulePersist(parentCode: string) {
 
   const timer = window.setTimeout(() => {
     saveTimers.delete(parentCode);
-
-    const state = useStockStore.getState();
-
-    if (state.activeParentCode === parentCode) {
-      state.persistActive();
-    }
+    persistParent(parentCode);
   }, 300);
 
   saveTimers.set(parentCode, timer);
