@@ -91,22 +91,19 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
     <>
       <section class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
         <div class="border-b border-gray-100 px-4 py-4 md:px-6">
-          <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
-            Matriz de conteo
+          <p class="text-xs font-semibold uppercase tracking-wide text-rose-500">
+            Conteo
           </p>
           <h2 class="mt-1 text-lg font-bold text-gray-900">
             Color × Talla
           </h2>
-          <p class="mt-1 text-sm text-gray-500">
-            Toca una imagen para verla grande y escribe el conteo en cada talla.
-          </p>
         </div>
 
         <div class="hidden overflow-x-auto md:block">
           <table class="w-full border-collapse text-sm">
             <thead>
-              <tr class="border-b border-gray-200 bg-slate-50">
-                <th class="min-w-[240px] bg-slate-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
+              <tr class="border-b border-gray-200 bg-rose-50/60">
+                <th class="min-w-[240px] bg-rose-50/60 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
                   Color
                 </th>
                 {sizes.map((size) => (
@@ -155,7 +152,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
           {colors.map((colorRow) => (
             <article
               key={colorRow.color}
-              class="rounded-2xl border border-gray-200 bg-slate-50 p-3"
+              class="rounded-2xl border border-rose-100 bg-rose-50/40 p-3"
             >
               <div class="mb-3 flex items-center justify-between gap-3">
                 <ColorLabel
@@ -257,7 +254,7 @@ function ColorLabel({
 
       <div class="min-w-0">
         <p class="truncate text-sm font-bold text-gray-900">{color}</p>
-        {image && <p class="text-xs font-medium text-blue-600">Ampliar imagen</p>}
+        {image && <p class="text-xs font-medium text-rose-500">Ampliar imagen</p>}
       </div>
     </div>
   );
@@ -283,7 +280,7 @@ function StockInput({
       class={`min-h-fat w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-gray-900 focus:outline-none focus:ring-4 md:text-2xl ${
         isDirty
           ? 'border-amber-300 bg-amber-50 focus:border-amber-400 focus:ring-amber-100'
-          : 'border-gray-200 focus:border-blue-600 focus:ring-blue-100'
+          : 'border-gray-200 focus:border-rose-400 focus:ring-rose-100'
       }`}
     />
   );
@@ -295,7 +292,7 @@ function parseStock(value: string | undefined): number {
 }
 
 function sortSizes(sizes: string[]): string[] {
-  return sizes.sort((a, b) => {
+  return [...sizes].sort((a, b) => {
     const aIndex = SIZE_ORDER.indexOf(a.toUpperCase());
     const bIndex = SIZE_ORDER.indexOf(b.toUpperCase());
 
