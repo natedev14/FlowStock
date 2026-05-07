@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useStockStore } from '../store/useStockStore';
-import { VariationCard } from './VariationCard';
+import { StockMatrix } from './StockMatrix';
 import { ExportButton } from './ExportButton';
 import { firstImageUrl } from '../lib/grouping';
 import { parseDescricao } from '../lib/parseDescricao';
@@ -87,7 +87,7 @@ export function EditorScreen() {
               <img
                 src={parentImg}
                 alt={parentRow['Descrição'] ?? group.parentCode}
-                class="h-full w-full object-cover"
+                class="h-full w-full object-contain p-1"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
@@ -117,30 +117,26 @@ export function EditorScreen() {
             placeholder='Buscar color, talla o SKU (ej. "Rosa", "GG")'
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
-            class="min-h-touch w-full rounded-xl border-0 bg-white px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+            class="min-h-touch w-full rounded-xl border-0 bg-slate-50 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
           />
         </div>
       </header>
 
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-32 md:px-8 md:py-8">
-        {filteredChildren.length === 0 && (
+        {filteredChildren.length === 0 ? (
           <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
             Sin variaciones que coincidan
           </div>
+        ) : (
+          <StockMatrix parentCode={group.parentCode} childCodes={filteredChildren} />
         )}
-
-        <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
-          {filteredChildren.map((childCode) => (
-            <li key={childCode}>
-              <VariationCard parentCode={group.parentCode} childCode={childCode} />
-            </li>
-          ))}
-        </ul>
       </main>
 
       <footer class="fixed inset-x-0 bottom-0 border-t border-gray-200 bg-white px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-        <div class="mx-auto w-full max-w-7xl">
-          <ExportButton />
+        <div class="mx-auto flex w-full max-w-7xl justify-center md:justify-end">
+          <div class="w-full md:max-w-md">
+            <ExportButton />
+          </div>
         </div>
       </footer>
     </div>
