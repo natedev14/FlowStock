@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useStockStore } from '../store/useStockStore';
 import { firstImageUrl } from '../lib/grouping';
 import { parseDescricao } from '../lib/parseDescricao';
@@ -24,6 +24,8 @@ const SIZE_ORDER = ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XGG', 'U', 'ÚNICO'];
 
 export function StockMatrix({ parentCode, childCodes }: Props) {
   const [openImage, setOpenImage] = useState<{ src: string; label: string } | null>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const rows = useStockStore((s) => s.rows);
   const indexByCode = useStockStore((s) => s.indexByCode);
@@ -79,6 +81,25 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
     updateChildStock(parentCode, cell.childCode, String(safeValue));
   }
 
+  useEffect(() => {
+    if (!openImage) return;
+    closeButtonRef.current?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setOpenImage(null);
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [openImage]);
+
+  useEffect(() => {
+    if (openImage) return;
+    lastTriggerRef.current?.focus();
+  }, [openImage]);
+
   if (colors.length === 0) {
     return (
       <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
@@ -121,7 +142,10 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                     <ColorLabel
                       color={colorRow.color}
                       image={colorRow.image}
-                      onOpenImage={setOpenImage}
+                      onOpenImage={(image, triggerEl) => {
+                        lastTriggerRef.current = triggerEl;
+                        setOpenImage(image);
+                      }}
                     />
                   </td>
 
@@ -158,7 +182,10 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                 <ColorLabel
                   color={colorRow.color}
                   image={colorRow.image}
-                  onOpenImage={setOpenImage}
+                  onOpenImage={(image, triggerEl) => {
+                    lastTriggerRef.current = triggerEl;
+                    setOpenImage(image);
+                  }}
                 />
               </div>
 
@@ -198,6 +225,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
         >
           <button
             type="button"
+            ref={closeButtonRef}
             class="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-2xl font-bold text-white"
             onClick={() => setOpenImage(null)}
             aria-label="Cerrar imagen"
@@ -228,15 +256,18 @@ function ColorLabel({
 }: {
   color: string;
   image: string | null;
-  onOpenImage: (image: { src: string; label: string }) => void;
+  onOpenImage: (image: { src: string; label: string }, triggerEl: HTMLButtonElement) => void;
 }) {
   return (
     <div class="flex items-center gap-3">
       <button
         type="button"
         disabled={!image}
-        onClick={() => image && onOpenImage({ src: image, label: color })}
-        class="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 disabled:cursor-default"
+        onClick={(e) => {
+          if (!image) return;
+          onOpenImage({ src: image, label: color }, e.currentTarget as HTMLButtonElement);
+        }}
+        class="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 transition hover:ring-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:cursor-default"
         aria-label={`Ampliar imagen de ${color}`}
       >
         {image && (
@@ -260,21 +291,14 @@ function ColorLabel({
   );
 }
 
-function StockInput({
-  value,
-  isDirty,
-  onInput,
-}: {
-  value: number;
-  isDirty: boolean;
-  onInput: (value: string) => void;
-}) {
+function StockInput({ value, isDirty, onInput }: { value: number; isDirty: boolean; onInput: (value: string) => void }) {
   return (
     <input
       type="number"
       inputMode="numeric"
       min="0"
       step="1"
+      enterKeyHint="done"
       value={String(value)}
       onInput={(e) => onInput((e.target as HTMLInputElement).value)}
       class={`min-h-fat w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-gray-900 focus:outline-none focus:ring-4 md:text-2xl ${

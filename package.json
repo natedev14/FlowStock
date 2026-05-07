@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run build",
     "preview": "vite preview",
     "deploy:gh": "vite build && gh-pages -d dist"
   },

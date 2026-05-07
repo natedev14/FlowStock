@@ -111,6 +111,12 @@ export function EditorScreen() {
             placeholder="Buscar color"
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setSearchVar('');
+              }
+            }}
+            enterKeyHint="search"
             class="min-h-touch w-full rounded-xl border-0 bg-rose-50/60 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-300"
           />
         </div>
