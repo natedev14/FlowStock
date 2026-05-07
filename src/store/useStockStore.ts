@@ -4,35 +4,22 @@ import { buildGroups } from '../lib/grouping';
 import { clearAllSessions, loadSession, saveSession } from '../lib/storage';
 
 interface State {
-  // ——— Carga ———
   loaded: boolean;
   meta: CsvMeta | null;
-  // Almacenamiento plano: orden de inserción preservado → export respeta orden original
   rows: CsvRow[];
-  // Índice rápido: Código -> posición en rows[]
   indexByCode: Map<string, number>;
   groups: ParentGroup[];
 
-  // ——— UI ———
   activeParentCode: string | null;
   search: string;
-  dirtyByParent: Record<string, Set<string>>; // parentCode -> set de childCodes tocados
+  dirtyByParent: Record<string, Set<string>>;
 
-  // ——— Acciones ———
   loadData: (rows: CsvRow[], meta: CsvMeta) => void;
   reset: () => void;
   setActiveParent: (code: string | null) => void;
   setSearch: (q: string) => void;
-
-  // Modifica el campo Estoque de un hijo. newValue viene ya como string
-  // (UI lo validará como integer >= 0).
   updateChildStock: (parentCode: string, childCode: string, newValue: string) => void;
-
-  // Persiste la sesión del padre actual en localStorage.
   persistActive: () => void;
-
-  // Intenta rehidratar la sesión persistida del padre que se acaba de activar.
-  // Se llama al cambiar de padre — si había overrides los re-aplica.
   rehydrateActive: () => void;
 }
 
@@ -48,7 +35,6 @@ export const useStockStore = create<State>((set, get) => ({
   dirtyByParent: {},
 
   loadData: (rows, meta) => {
-    // Limpiar TODAS las sesiones anteriores al cargar nuevo CSV.
     clearAllSessions();
 
     const indexByCode = new Map<string, number>();
@@ -58,6 +44,7 @@ export const useStockStore = create<State>((set, get) => ({
     });
 
     const groups = buildGroups(rows);
+    const firstParentCode = groups[0]?.parentCode ?? null;
 
     set({
       loaded: true,
@@ -65,7 +52,7 @@ export const useStockStore = create<State>((set, get) => ({
       rows,
       indexByCode,
       groups,
-      activeParentCode: null,
+      activeParentCode: firstParentCode,
       search: '',
       dirtyByParent: {},
     });
@@ -102,7 +89,6 @@ export const useStockStore = create<State>((set, get) => ({
     if (idx === undefined) return;
 
     const clean = sanitizeStock(newValue);
-
     const updated = { ...rows[idx], Estoque: clean };
     const newRows = rows.slice();
     newRows[idx] = updated;
@@ -113,7 +99,6 @@ export const useStockStore = create<State>((set, get) => ({
     dirty[parentCode] = set_;
 
     set({ rows: newRows, dirtyByParent: dirty });
-
     schedulePersist(parentCode);
   },
 
@@ -172,7 +157,6 @@ function sanitizeStock(raw: string): string {
   return String(Math.floor(num));
 }
 
-// Debouncer global para autosave. Una sola entrada en vuelo por padre.
 const saveTimers = new Map<string, number>();
 
 function schedulePersist(parentCode: string) {
