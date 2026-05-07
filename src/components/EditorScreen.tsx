@@ -51,7 +51,7 @@ export function EditorScreen() {
 
   if (!group || !parentRow) {
     return (
-      <div class="min-h-screen flex items-center justify-center bg-white p-6 text-center text-gray-500">
+      <div class="min-h-screen flex items-center justify-center bg-slate-50 p-6 text-center text-gray-500">
         <div>
           <p class="mb-4">Modelo no encontrado.</p>
           <button
@@ -96,7 +96,7 @@ export function EditorScreen() {
           </div>
 
           <div class="min-w-0 flex-1">
-            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
               {group.parentCode}
             </p>
 
@@ -117,7 +117,7 @@ export function EditorScreen() {
             placeholder='Buscar color, talla o SKU (ej. "Rosa", "GG")'
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
-            class="min-h-touch w-full rounded-xl border-0 bg-gray-100 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            class="min-h-touch w-full rounded-xl border-0 bg-white px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
           />
         </div>
       </header>

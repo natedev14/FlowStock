@@ -38,7 +38,7 @@ export function VariationCard({ parentCode, childCode }: Props) {
   return (
     <>
       <div
-        class={`rounded-3xl border p-4 md:p-6 bg-white transition-colors ${
+        class={`rounded-3xl border p-4 md:p-6 bg-slate-50 transition-colors ${
           isDirty ? 'border-amber-300 bg-amber-50/40' : 'border-gray-100'
         }`}
       >
@@ -78,7 +78,7 @@ export function VariationCard({ parentCode, childCode }: Props) {
             </p>
 
             {img && (
-              <p class="mt-2 text-xs font-medium text-gray-400">
+              <p class="mt-2 text-xs font-medium text-blue-600">
                 Toca la imagen para ampliar
               </p>
             )}
@@ -101,7 +101,7 @@ export function VariationCard({ parentCode, childCode }: Props) {
             class={`w-full min-h-fat text-center text-3xl md:text-4xl font-bold rounded-2xl border-2 bg-white focus:outline-none focus:ring-4 ${
               isDirty
                 ? 'border-amber-300 focus:border-amber-400 focus:ring-amber-100'
-                : 'border-gray-200 focus:border-gray-500 focus:ring-gray-100'
+                : 'border-gray-200 focus:border-blue-600 focus:ring-blue-100'
             }`}
           />
         </div>

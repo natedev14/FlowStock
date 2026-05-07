@@ -49,11 +49,14 @@ export function UploadScreen() {
   }
 
   return (
-    <div class="min-h-screen bg-white px-4 py-10 md:px-8">
-      <div class="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-3xl items-center justify-center rounded-3xl border border-gray-100 bg-white p-6 md:p-10">
+    <div class="min-h-screen bg-slate-50 px-4 py-10 md:px-8">
+      <div class="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-3xl items-center justify-center rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-10">
         <div class="mx-auto flex w-full max-w-md flex-col gap-6">
+          <div class="inline-flex w-fit items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+            Flujo rápido de inventario
+          </div>
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
               Gissary Stock Editor
             </p>
 
@@ -78,7 +81,7 @@ export function UploadScreen() {
             type="button"
             disabled={busy}
             onClick={() => inputRef.current?.click()}
-            class="min-h-fat w-full rounded-2xl bg-gray-900 px-5 text-lg font-bold text-white transition-transform active:scale-[0.98] disabled:opacity-50"
+            class="min-h-fat w-full rounded-2xl bg-blue-600 px-5 text-lg font-bold text-white transition-transform active:scale-[0.98] disabled:opacity-50"
           >
             {busy ? 'Cargando CSV...' : 'Seleccionar CSV'}
           </button>
