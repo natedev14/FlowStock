@@ -45,15 +45,15 @@ export function EditorScreen() {
 
   if (!group || !parentRow) {
     return (
-      <div class="flex min-h-screen items-center justify-center bg-rose-50 p-6 text-center text-gray-500">
+      <div class="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-center text-slate-500">
         <div>
-          <p class="mb-4">No se encontró el producto.</p>
+          <p class="mb-4">Produto não encontrado.</p>
           <button
             type="button"
-            class="rounded-xl bg-rose-500 px-5 py-3 font-semibold text-white"
+            class="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white"
             onClick={() => reset()}
           >
-            Cargar inventario
+            Carregar inventário
           </button>
         </div>
       </div>
@@ -61,22 +61,22 @@ export function EditorScreen() {
   }
 
   return (
-    <div class="flex min-h-screen flex-col bg-white">
-      <header class="sticky top-0 z-20 border-b border-rose-100 bg-white/95 backdrop-blur">
-        <div class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 md:px-8">
+    <div class="flex min-h-screen flex-col bg-slate-50">
+      <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 md:gap-4 md:px-8 md:py-4">
           <button
             type="button"
             onClick={() => {
               persistActive();
               reset();
             }}
-            class="-ml-2 flex min-h-touch min-w-touch items-center justify-center rounded-xl text-2xl text-gray-700 hover:bg-rose-50"
-            aria-label="Cargar otro inventario"
+            class="-ml-2 flex min-h-touch min-w-touch items-center justify-center rounded-xl text-2xl text-slate-600 hover:bg-slate-100"
+            aria-label="Carregar outro inventário"
           >
             ‹
           </button>
 
-          <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl bg-rose-50 md:h-24 md:w-24">
+          <div class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200 md:h-20 md:w-20">
             {parentImg && (
               <img
                 src={parentImg}
@@ -90,25 +90,25 @@ export function EditorScreen() {
           </div>
 
           <div class="min-w-0 flex-1">
-            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-rose-500">
+            <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
               {group.parentCode}
             </p>
 
-            <h1 class="truncate text-base font-bold text-gray-900 md:text-xl">
+            <h1 class="truncate text-base font-bold text-slate-900 md:text-xl">
               {parentRow['Descrição']}
             </h1>
 
-            <p class="mt-1 text-xs text-gray-500 md:text-sm">
-              {group.childCodes.length} variaciones
+            <p class="mt-1 text-xs text-slate-500 md:text-sm">
+              {group.childCodes.length} variações
             </p>
           </div>
         </div>
 
-        <div class="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 pb-4 md:flex-row md:px-8">
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 pb-3 md:flex-row md:px-8 md:pb-4">
           <input
             type="search"
             inputMode="search"
-            placeholder="Buscar color"
+            placeholder="Buscar cor"
             value={searchVar}
             onInput={(e) => setSearchVar((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => {
@@ -117,22 +117,22 @@ export function EditorScreen() {
               }
             }}
             enterKeyHint="search"
-            class="min-h-touch w-full rounded-xl border-0 bg-rose-50/60 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-300"
+            class="min-h-touch w-full rounded-2xl border border-slate-200 bg-slate-100 px-4 text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
         </div>
       </header>
 
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 md:px-8 md:py-8">
         {filteredChildren.length === 0 ? (
-          <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
-            Sin colores que coincidan
+          <div class="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
+            Nenhuma cor encontrada
           </div>
         ) : (
           <StockMatrix parentCode={group.parentCode} childCodes={filteredChildren} />
         )}
       </main>
 
-      <footer class="sticky bottom-0 z-20 border-t border-rose-100 bg-white px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+      <footer class="sticky bottom-0 z-20 border-t border-slate-200 bg-white/95 px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)] backdrop-blur">
         <div class="mx-auto flex w-full max-w-7xl justify-center md:justify-end">
           <div class="w-full md:max-w-md">
             <ExportButton />
