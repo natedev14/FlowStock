@@ -1,4 +1,4 @@
-# Gissary Stock Editor
+# FlowStock
 
 App web estática para **conteo visual de estoque** de productos de Gissary Modas a partir de CSVs exportados desde Bling ERP.
 
