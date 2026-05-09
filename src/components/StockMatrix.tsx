@@ -111,12 +111,12 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
   return (
     <>
       <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-4 py-4 md:px-6">
+        <div class="border-b border-slate-100 px-4 py-3 md:px-6 md:py-4">
           <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
             Contagem
           </p>
-          <h2 class="mt-1 text-lg font-bold text-slate-900">
-            Cor × Tamanho
+          <h2 class="mt-0.5 text-lg font-bold text-slate-900">
+            Cor x Tamanho
           </h2>
         </div>
 
@@ -161,7 +161,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                             onInput={(value) => updateCell(cell, value)}
                           />
                         ) : (
-                          <span class="text-slate-300">—</span>
+                          <span class="text-slate-300">-</span>
                         )}
                       </td>
                     );
@@ -172,13 +172,13 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
           </table>
         </div>
 
-        <div class="grid gap-3 p-3 md:hidden">
+        <div class="grid gap-2 p-2.5 md:hidden">
           {colors.map((colorRow) => (
             <article
               key={colorRow.color}
-              class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm"
             >
-              <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="mb-2 flex items-center justify-between gap-2">
                 <ColorLabel
                   color={colorRow.color}
                   image={colorRow.image}
@@ -196,7 +196,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 
                   return (
                     <div key={size}>
-                      <p class="mb-1 text-center text-xs font-bold text-slate-500">{size}</p>
+                      <p class="mb-1 text-center text-xs font-bold leading-none text-slate-500">{size}</p>
                       {cell ? (
                         <StockInput
                           value={cell.stock}
@@ -204,8 +204,8 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                           onInput={(value) => updateCell(cell, value)}
                         />
                       ) : (
-                        <div class="flex min-h-fat items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-300">
-                          —
+                        <div class="flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-300">
+                          -
                         </div>
                       )}
                     </div>
@@ -231,7 +231,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
             onClick={() => setOpenImage(null)}
             aria-label="Fechar imagem"
           >
-            ×
+            x
           </button>
 
           <img
@@ -262,7 +262,7 @@ function ColorLabel({
   onOpenImage: (image: { src: string; label: string }, triggerEl: HTMLButtonElement) => void;
 }) {
   return (
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2.5">
       <button
         type="button"
         disabled={!image}
@@ -270,7 +270,7 @@ function ColorLabel({
           if (!image) return;
           onOpenImage({ src: image, label: color }, e.currentTarget as HTMLButtonElement);
         }}
-        class="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-200 transition hover:ring-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:cursor-default"
+        class={`${compact ? 'h-12 w-12 rounded-xl' : 'h-14 w-14 rounded-2xl'} relative flex-shrink-0 overflow-hidden bg-slate-50 ring-1 ring-slate-200 transition hover:ring-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:cursor-default`}
         aria-label={`Ampliar imagem de ${color}`}
       >
         {image && (
@@ -304,7 +304,7 @@ function StockInput({ value, isDirty, onInput }: { value: number; isDirty: boole
       enterKeyHint="done"
       value={String(value)}
       onInput={(e) => onInput((e.target as HTMLInputElement).value)}
-      class={`min-h-fat w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-slate-900 focus:outline-none focus:ring-4 md:text-2xl ${
+      class={`h-14 w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-slate-900 focus:outline-none focus:ring-4 md:min-h-fat md:text-2xl ${
         isDirty
           ? 'border-emerald-300 bg-emerald-50 focus:border-emerald-400 focus:ring-emerald-100'
           : 'border-slate-200 focus:border-blue-400 focus:ring-blue-100'
