@@ -36,13 +36,13 @@ export function ExportButton() {
       type="button"
       onClick={handleExport}
       disabled={busy || !meta}
-      class="w-full min-h-fat rounded-2xl bg-blue-600 px-4 py-3 text-white shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50"
+      class="w-full rounded-2xl bg-blue-600 px-4 py-2.5 text-white shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50"
     >
-      <span class="block text-base font-bold">
+      <span class="block text-base font-bold leading-tight">
         {busy ? 'Exportando CSV...' : 'Exportar CSV'}
       </span>
 
-      <span class="mt-0.5 block text-xs font-medium text-blue-100">
+      <span class="mt-0.5 block text-xs font-medium leading-tight text-blue-100">
         {totalDirty > 0
           ? `${totalDirty} variações alteradas em ${editedParents} produto${
               editedParents === 1 ? '' : 's'
