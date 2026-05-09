@@ -64,11 +64,11 @@ export function UploadScreen() {
               </div>
 
               <p class="text-xs font-semibold uppercase tracking-wide text-rose-500">
-                Gissary Modas
+                FlowStock
               </p>
 
-              <h1 class="mt-2 text-3xl font-bold text-gray-900">
-                Contar estoque
+               <h1 class="mt-2 text-3xl font-bold text-gray-900">
+                  Controle visual de estoque
               </h1>
 
               <p class="mt-2 text-sm leading-6 text-gray-500">
@@ -102,9 +102,7 @@ export function UploadScreen() {
               </div>
             )}
 
-            <p class="text-center text-xs text-gray-400">
-              Desarrollado por Natev
-            </p>
+            
           </div>
         </main>
       </div>
