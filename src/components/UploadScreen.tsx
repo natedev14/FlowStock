@@ -18,12 +18,12 @@ export function UploadScreen() {
       const headerCheck = validateHeaders(meta.fields);
 
       if (!headerCheck.ok) {
-        setError(`Faltan columnas necesarias: ${headerCheck.missing.join(', ')}`);
+        setError(`Faltam colunas necessárias: ${headerCheck.missing.join(', ')}`);
         return;
       }
 
       if (rows.length === 0) {
-        setError('El archivo no contiene productos.');
+        setError('O arquivo não contém produtos.');
         return;
       }
 
@@ -36,7 +36,7 @@ export function UploadScreen() {
 
       loadData(rows, meta);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'No se pudo leer el archivo.');
+      setError(e instanceof Error ? e.message : 'Não foi possível ler o arquivo.');
     } finally {
       setBusy(false);
     }
@@ -54,25 +54,25 @@ export function UploadScreen() {
   }
 
   return (
-    <div class="min-h-screen bg-rose-50 px-4 py-10 md:px-8">
+    <div class="min-h-screen bg-slate-50 px-4 py-10 md:px-8">
       <div class="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-xl items-center justify-center">
-        <main class="w-full rounded-[2rem] border border-rose-100 bg-white p-6 shadow-sm md:p-10">
+        <main class="w-full rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-10">
           <div class="mx-auto flex w-full max-w-md flex-col gap-6">
             <div>
-              <div class="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500 text-xl font-extrabold text-white shadow-sm">
-                GM
+              <div class="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-xl font-extrabold text-white shadow-sm">
+                FS
               </div>
 
-              <p class="text-xs font-semibold uppercase tracking-wide text-rose-500">
+              <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
                 FlowStock
               </p>
 
-               <h1 class="mt-2 text-3xl font-bold text-gray-900">
-                  Controle visual de estoque
+              <h1 class="mt-2 text-3xl font-bold text-slate-900">
+                Controle visual de estoque
               </h1>
 
-              <p class="mt-2 text-sm leading-6 text-gray-500">
-                Carga un producto de Bling y edita el stock por color y talla.
+              <p class="mt-2 text-sm leading-6 text-slate-500">
+                Carregue o CSV do Bling e conte o estoque por cor e tamanho.
               </p>
             </div>
 
@@ -88,9 +88,9 @@ export function UploadScreen() {
               type="button"
               disabled={busy}
               onClick={() => inputRef.current?.click()}
-              class="min-h-fat w-full rounded-2xl bg-rose-500 px-5 text-lg font-bold text-white transition-transform active:scale-[0.98] disabled:opacity-50"
+              class="min-h-fat w-full rounded-2xl bg-blue-600 px-5 text-lg font-bold text-white transition-transform active:scale-[0.98] disabled:opacity-50"
             >
-              {busy ? 'Cargando...' : 'Cargar inventario'}
+              {busy ? 'Carregando...' : 'Carregar inventário'}
             </button>
 
             {error && (
@@ -101,8 +101,6 @@ export function UploadScreen() {
                 {error}
               </div>
             )}
-
-            
           </div>
         </main>
       </div>
