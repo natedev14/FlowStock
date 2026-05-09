@@ -44,10 +44,10 @@ export function ExportButton() {
 
       <span class="mt-0.5 block text-xs font-medium text-blue-100">
         {totalDirty > 0
-          ? `${totalDirty} variaciones modificadas en ${editedParents} producto${
+          ? `${totalDirty} variações alteradas em ${editedParents} produto${
               editedParents === 1 ? '' : 's'
             }`
-          : 'Sin cambios todavía'}
+          : 'Sem alterações ainda'}
       </span>
     </button>
   );
