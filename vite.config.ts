@@ -2,10 +2,10 @@ import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// Para GitHub Pages con repo "FlowStock" usa base: '/FlowStock/'.
-// Si despliegas en dominio propio como flowstock.nathanielvergara.com, usa base: '/'.
+// Base relativa para funcionar tanto en GitHub Pages con subruta (/FlowStock/)
+// como en dominio propio (flowstock.nathanielvergara.com).
 export default defineConfig({
-  base: '/',
+  base: './',
   plugins: [
     preact(),
     VitePWA({
