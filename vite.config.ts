@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/icon-192.svg', 'icons/icon-512.svg'],
       manifest: {
-        name: 'Gissary Stock Editor',
-        short_name: 'Gissary',
-        description: 'Editor de stock físico para Gissary Modas',
+        name: 'FlowStock'
+        short_name: 'FlowStock'
+        description: 'Contagem visual de estoque'
         theme_color: '#111827',
         background_color: '#ffffff',
         display: 'standalone',
