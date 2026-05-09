@@ -44,7 +44,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 
       const row = rows[idx];
       const parsed = parseDescricao(row['Descrição'] ?? '');
-      const color = parsed.cor || 'Sin color';
+      const color = parsed.cor || 'Sem cor';
       const size = parsed.tamanho || 'ÚNICO';
       const stock = parseStock(row['Estoque']);
 
@@ -102,33 +102,33 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 
   if (colors.length === 0) {
     return (
-      <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
-        Sin variaciones para mostrar
+      <div class="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
+        Sem variações para mostrar
       </div>
     );
   }
 
   return (
     <>
-      <section class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-        <div class="border-b border-gray-100 px-4 py-4 md:px-6">
-          <p class="text-xs font-semibold uppercase tracking-wide text-rose-500">
-            Conteo
+      <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-100 px-4 py-4 md:px-6">
+          <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
+            Contagem
           </p>
-          <h2 class="mt-1 text-lg font-bold text-gray-900">
-            Color × Talla
+          <h2 class="mt-1 text-lg font-bold text-slate-900">
+            Cor × Tamanho
           </h2>
         </div>
 
         <div class="hidden overflow-x-auto md:block">
           <table class="w-full border-collapse text-sm">
             <thead>
-              <tr class="border-b border-gray-200 bg-rose-50/60">
-                <th class="min-w-[240px] bg-rose-50/60 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
-                  Color
+              <tr class="border-b border-slate-200 bg-slate-50">
+                <th class="min-w-[240px] bg-slate-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Cor
                 </th>
                 {sizes.map((size) => (
-                  <th key={size} class="min-w-[140px] px-3 py-3 text-center text-sm font-bold text-gray-700">
+                  <th key={size} class="min-w-[140px] px-3 py-3 text-center text-sm font-bold text-slate-700">
                     {size}
                   </th>
                 ))}
@@ -137,7 +137,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 
             <tbody>
               {colors.map((colorRow) => (
-                <tr key={colorRow.color} class="border-b border-gray-100 last:border-b-0">
+                <tr key={colorRow.color} class="border-b border-slate-100 last:border-b-0">
                   <td class="bg-white px-4 py-3 align-middle">
                     <ColorLabel
                       color={colorRow.color}
@@ -153,7 +153,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                     const cell = colorRow.cells[size];
 
                     return (
-                      <td key={size} class="border-l border-gray-100 px-3 py-3 text-center align-middle">
+                      <td key={size} class="border-l border-slate-100 px-3 py-3 text-center align-middle">
                         {cell ? (
                           <StockInput
                             value={cell.stock}
@@ -161,7 +161,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                             onInput={(value) => updateCell(cell, value)}
                           />
                         ) : (
-                          <span class="text-gray-300">—</span>
+                          <span class="text-slate-300">—</span>
                         )}
                       </td>
                     );
@@ -176,12 +176,13 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
           {colors.map((colorRow) => (
             <article
               key={colorRow.color}
-              class="rounded-2xl border border-rose-100 bg-rose-50/40 p-3"
+              class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
             >
               <div class="mb-3 flex items-center justify-between gap-3">
                 <ColorLabel
                   color={colorRow.color}
                   image={colorRow.image}
+                  compact
                   onOpenImage={(image, triggerEl) => {
                     lastTriggerRef.current = triggerEl;
                     setOpenImage(image);
@@ -189,13 +190,13 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                 />
               </div>
 
-              <div class="grid grid-cols-3 gap-2">
+              <div class="grid grid-cols-2 gap-2">
                 {sizes.map((size) => {
                   const cell = colorRow.cells[size];
 
                   return (
                     <div key={size}>
-                      <p class="mb-1 text-center text-xs font-bold text-gray-500">{size}</p>
+                      <p class="mb-1 text-center text-xs font-bold text-slate-500">{size}</p>
                       {cell ? (
                         <StockInput
                           value={cell.stock}
@@ -203,7 +204,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
                           onInput={(value) => updateCell(cell, value)}
                         />
                       ) : (
-                        <div class="flex min-h-fat items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-300">
+                        <div class="flex min-h-fat items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-300">
                           —
                         </div>
                       )}
@@ -228,7 +229,7 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
             ref={closeButtonRef}
             class="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-2xl font-bold text-white"
             onClick={() => setOpenImage(null)}
-            aria-label="Cerrar imagen"
+            aria-label="Fechar imagem"
           >
             ×
           </button>
@@ -252,10 +253,12 @@ export function StockMatrix({ parentCode, childCodes }: Props) {
 function ColorLabel({
   color,
   image,
+  compact = false,
   onOpenImage,
 }: {
   color: string;
   image: string | null;
+  compact?: boolean;
   onOpenImage: (image: { src: string; label: string }, triggerEl: HTMLButtonElement) => void;
 }) {
   return (
@@ -267,8 +270,8 @@ function ColorLabel({
           if (!image) return;
           onOpenImage({ src: image, label: color }, e.currentTarget as HTMLButtonElement);
         }}
-        class="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 transition hover:ring-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:cursor-default"
-        aria-label={`Ampliar imagen de ${color}`}
+        class="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-200 transition hover:ring-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:cursor-default"
+        aria-label={`Ampliar imagem de ${color}`}
       >
         {image && (
           <img
@@ -284,8 +287,8 @@ function ColorLabel({
       </button>
 
       <div class="min-w-0">
-        <p class="truncate text-sm font-bold text-gray-900">{color}</p>
-        {image && <p class="text-xs font-medium text-rose-500">Ampliar imagen</p>}
+        <p class="truncate text-sm font-bold text-slate-900">{color}</p>
+        {image && !compact && <p class="text-xs font-medium text-blue-600">Ver foto</p>}
       </div>
     </div>
   );
@@ -301,10 +304,10 @@ function StockInput({ value, isDirty, onInput }: { value: number; isDirty: boole
       enterKeyHint="done"
       value={String(value)}
       onInput={(e) => onInput((e.target as HTMLInputElement).value)}
-      class={`min-h-fat w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-gray-900 focus:outline-none focus:ring-4 md:text-2xl ${
+      class={`min-h-fat w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-slate-900 focus:outline-none focus:ring-4 md:text-2xl ${
         isDirty
-          ? 'border-amber-300 bg-amber-50 focus:border-amber-400 focus:ring-amber-100'
-          : 'border-gray-200 focus:border-rose-400 focus:ring-rose-100'
+          ? 'border-emerald-300 bg-emerald-50 focus:border-emerald-400 focus:ring-emerald-100'
+          : 'border-slate-200 focus:border-blue-400 focus:ring-blue-100'
       }`}
     />
   );
