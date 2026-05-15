@@ -50,6 +50,7 @@ export const useStockStore = create<State>((set, get) => ({
 
     const groups = buildGroups(rows);
     const firstGroup = groups[0];
+    // FlowStock v2 aceita 1 produto pai por CSV, então abrimos automaticamente o único grupo válido.
     const firstParentCode = firstGroup?.parentCode ?? null;
     const variationReport = firstGroup
       ? validateVariations(rows, firstGroup, indexByCode)

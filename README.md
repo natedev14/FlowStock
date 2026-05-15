@@ -136,3 +136,9 @@ URL pública atual:
 ```txt
 https://natedev14.github.io/gissary-stock-editor/
 ```
+
+
+## Nota sobre legado multiproduto
+
+- O componente `ParentSelector` é legado/futuro e não faz parte do fluxo ativo do FlowStock v2.
+- No v2, o fluxo oficial é 1 produto pai por CSV.
