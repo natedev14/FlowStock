@@ -156,3 +156,11 @@ https://natedev14.github.io/gissary-stock-editor/
 - Introduz `ColorGalleryScreen`, `ColorCard` e a utilidade `buildColorGroups`.
 - A matriz (`StockMatrix`) continua como transição/legado nesta fase.
 - A edição dedicada por tamanho ficará para a Fase 5.
+
+
+## Fase 5 — Contagem por cor/tamanho e fluxo guiado
+
+- Introduz `ColorCountScreen`, `SizeStepper` e `ReviewExportScreen`.
+- O fluxo principal agora permite `Salvar e próximo` entre cores.
+- `StockMatrix` continua disponível como legado/transição.
+- `Zerar estoque` permanece fora do escopo nesta fase.

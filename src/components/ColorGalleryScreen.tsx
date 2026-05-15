@@ -91,11 +91,17 @@ export function ColorGalleryScreen() {
                 onClick={() => {
                   setActiveColor(colorGroup.color);
                   // Fase 5 irá substituir este destino por ColorCountScreen.
-                  setCurrentScreen('editor');
+                  setCurrentScreen('count');
                 }}
               />
             ))
           )}
+        </div>
+
+        <div class="mt-4">
+          <button type="button" onClick={() => setCurrentScreen('editor')} class="text-xs font-semibold text-slate-500 underline">
+            Ver matriz legado
+          </button>
         </div>
       </main>
 

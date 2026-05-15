@@ -158,3 +158,10 @@ Fase 0 é somente alinhamento documental.
 - Base da UX mobile-first iniciada com galeria de cards por cor.
 - Lógica de agrupamento por cor/tamanho extraída para `buildColorGroups`.
 - `StockMatrix` permanece como legado/transição até a Fase 5, quando entra o editor dedicado por tamanho.
+
+
+## 10) Atualização da Fase 5 (implementada)
+
+- Entrada principal por galeria de cores agora abre contagem dedicada por cor/tamanho.
+- Fluxo guiado implementado com ação `Salvar e próximo` e fechamento em revisão/exportação.
+- `StockMatrix` segue como fallback legado; ações destrutivas continuam para fase futura.

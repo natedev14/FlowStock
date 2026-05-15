@@ -1,8 +1,9 @@
 import { useStockStore } from './store/useStockStore';
 import { UploadScreen } from './components/UploadScreen';
-import { EditorScreen } from './components/EditorScreen';
 import { ExportSuccessScreen } from './components/ExportSuccessScreen';
 import { ColorGalleryScreen } from './components/ColorGalleryScreen';
+import { ColorCountScreen } from './components/ColorCountScreen';
+import { ReviewExportScreen } from './components/ReviewExportScreen';
 
 export function App() {
   const loaded = useStockStore((s) => s.loaded);
@@ -11,5 +12,7 @@ export function App() {
   if (!loaded) return <UploadScreen />;
   if (currentScreen === 'export_success') return <ExportSuccessScreen />;
   if (currentScreen === 'colors') return <ColorGalleryScreen />;
-  return <EditorScreen />;
+  if (currentScreen === 'count') return <ColorCountScreen />;
+  if (currentScreen === 'review_export') return <ReviewExportScreen />;
+  return <ColorGalleryScreen />;
 }

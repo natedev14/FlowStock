@@ -5,7 +5,7 @@ import { clearAllSessions, loadSession, saveSession } from '../lib/storage';
 import { validateVariations, type VariationParseReport } from '../lib/validateVariations';
 
 type ExportStatus = 'not_exported' | 'exported' | 'dirty_after_export';
-type CurrentScreen = 'colors' | 'editor' | 'export_success';
+type CurrentScreen = 'colors' | 'count' | 'review_export' | 'editor' | 'export_success';
 
 interface State {
   loaded: boolean;
