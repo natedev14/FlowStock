@@ -4,6 +4,7 @@ import { StockMatrix } from './StockMatrix';
 import { ExportButton } from './ExportButton';
 import { firstImageUrl } from '../lib/grouping';
 import { parseDescricao } from '../lib/parseDescricao';
+import { VariationValidationSummary } from './VariationValidationSummary';
 
 export function EditorScreen() {
   const activeParentCode = useStockStore((s) => s.activeParentCode);
@@ -123,6 +124,7 @@ export function EditorScreen() {
       </header>
 
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 md:px-8 md:py-8">
+        <VariationValidationSummary />
         {filteredChildren.length === 0 ? (
           <div class="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
             Nenhuma cor encontrada

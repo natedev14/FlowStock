@@ -14,11 +14,18 @@ export interface ParentGroup {
   childCodes: string[];        // "Código" de cada hijo, en orden original
 }
 
+export type ParseStatus = 'ok' | 'warning' | 'error';
+export type ParseConfidence = 'high' | 'medium' | 'low';
+
 export interface ParsedDescricao {
   cor?: string;
   tamanho?: string;
   other: Array<{ key: string; value: string }>;
   raw: string;
+  status: ParseStatus;
+  confidence: ParseConfidence;
+  issues: string[];
+  detectedPattern?: string;
 }
 
 // Sesión persistida en localStorage por padre. Guardamos solo overrides
