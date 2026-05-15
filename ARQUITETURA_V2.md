@@ -144,3 +144,10 @@ Fase 0 é somente alinhamento documental.
 - Rebaixar/remover matriz como fluxo principal.
 - Revisar componentes legados (`StockMatrix`, `ParentSelector`).
 - Hardening final para operação recorrente.
+
+
+## 8) Atualização da Fase 3 (implementada)
+
+- Estado pós-exportação adicionado no store para rastrear exportação, arquivo e alterações posteriores.
+- Exportação agora leva a uma tela de sucesso sem reset automático da sessão.
+- Edições após exportação marcam estado `dirty_after_export` com aviso visível no editor.

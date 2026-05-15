@@ -9,6 +9,8 @@ export function ExportButton() {
   const meta = useStockStore((s) => s.meta);
   const dirtyByParent = useStockStore((s) => s.dirtyByParent);
   const hasBlockingVariationErrors = useStockStore((s) => s.hasBlockingVariationErrors);
+  const markExported = useStockStore((s) => s.markExported);
+  const setCurrentScreen = useStockStore((s) => s.setCurrentScreen);
 
   const totalDirty = Object.values(dirtyByParent).reduce(
     (acc, changedChildren) => acc + changedChildren.size,
@@ -25,8 +27,11 @@ export function ExportButton() {
     setBusy(true);
 
     try {
+      const filename = buildExportFilename();
       const blob = exportCsv(rows, meta);
-      downloadBlob(blob, buildExportFilename());
+      downloadBlob(blob, filename);
+      markExported(filename, totalDirty);
+      setCurrentScreen('export_success');
     } finally {
       setBusy(false);
     }

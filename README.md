@@ -142,3 +142,10 @@ https://natedev14.github.io/gissary-stock-editor/
 
 - O componente `ParentSelector` é legado/futuro e não faz parte do fluxo ativo do FlowStock v2.
 - No v2, o fluxo oficial é 1 produto pai por CSV.
+
+
+## Fase 3 — Ciclo pós-exportação
+
+- A sessão não é resetada automaticamente após exportar.
+- A app exibe uma tela de sucesso com ações: baixar novamente, continuar editando e carregar novo CSV.
+- Se houver edição após exportação, a sessão entra em estado de mudanças não exportadas e exibe aviso no editor.
