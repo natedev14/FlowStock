@@ -5,7 +5,7 @@ import { clearAllSessions, loadSession, saveSession } from '../lib/storage';
 import { validateVariations, type VariationParseReport } from '../lib/validateVariations';
 
 type ExportStatus = 'not_exported' | 'exported' | 'dirty_after_export';
-type CurrentScreen = 'editor' | 'export_success';
+type CurrentScreen = 'colors' | 'editor' | 'export_success';
 
 interface State {
   loaded: boolean;
@@ -21,6 +21,7 @@ interface State {
   lastExportFilename: string | null;
   lastExportDirtyCount: number;
   currentScreen: CurrentScreen;
+  activeColor: string | null;
 
   activeParentCode: string | null;
   search: string;
@@ -37,6 +38,7 @@ interface State {
   markExported: (filename: string, dirtyCount: number) => void;
   setExportStatus: (status: ExportStatus) => void;
   setCurrentScreen: (screen: CurrentScreen) => void;
+  setActiveColor: (color: string | null) => void;
 }
 
 export const useStockStore = create<State>((set, get) => ({
@@ -52,7 +54,8 @@ export const useStockStore = create<State>((set, get) => ({
   lastExportedAt: null,
   lastExportFilename: null,
   lastExportDirtyCount: 0,
-  currentScreen: 'editor',
+  currentScreen: 'colors',
+  activeColor: null,
 
   activeParentCode: null,
   search: '',
@@ -87,7 +90,8 @@ export const useStockStore = create<State>((set, get) => ({
       lastExportedAt: null,
       lastExportFilename: null,
       lastExportDirtyCount: 0,
-      currentScreen: 'editor',
+      currentScreen: 'colors',
+      activeColor: null,
       activeParentCode: firstParentCode,
       search: '',
       dirtyByParent: {},
@@ -109,7 +113,8 @@ export const useStockStore = create<State>((set, get) => ({
       lastExportedAt: null,
       lastExportFilename: null,
       lastExportDirtyCount: 0,
-      currentScreen: 'editor',
+      currentScreen: 'colors',
+      activeColor: null,
       activeParentCode: null,
       search: '',
       dirtyByParent: {},
@@ -186,6 +191,7 @@ export const useStockStore = create<State>((set, get) => ({
   setExportStatus: (status) => set({ exportStatus: status }),
 
   setCurrentScreen: (screen) => set({ currentScreen: screen }),
+  setActiveColor: (color) => set({ activeColor: color }),
 }));
 
 function sanitizeStock(raw: string): string {

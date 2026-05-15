@@ -151,3 +151,10 @@ Fase 0 é somente alinhamento documental.
 - Estado pós-exportação adicionado no store para rastrear exportação, arquivo e alterações posteriores.
 - Exportação agora leva a uma tela de sucesso sem reset automático da sessão.
 - Edições após exportação marcam estado `dirty_after_export` com aviso visível no editor.
+
+
+## 9) Atualização da Fase 4 (implementada)
+
+- Base da UX mobile-first iniciada com galeria de cards por cor.
+- Lógica de agrupamento por cor/tamanho extraída para `buildColorGroups`.
+- `StockMatrix` permanece como legado/transição até a Fase 5, quando entra o editor dedicado por tamanho.

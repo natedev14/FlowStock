@@ -149,3 +149,10 @@ https://natedev14.github.io/gissary-stock-editor/
 - A sessão não é resetada automaticamente após exportar.
 - A app exibe uma tela de sucesso com ações: baixar novamente, continuar editando e carregar novo CSV.
 - Se houver edição após exportação, a sessão entra em estado de mudanças não exportadas e exibe aviso no editor.
+
+
+## Fase 4 — Galeria de cores (base UX mobile-first)
+
+- Introduz `ColorGalleryScreen`, `ColorCard` e a utilidade `buildColorGroups`.
+- A matriz (`StockMatrix`) continua como transição/legado nesta fase.
+- A edição dedicada por tamanho ficará para a Fase 5.
