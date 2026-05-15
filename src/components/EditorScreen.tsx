@@ -4,6 +4,8 @@ import { StockMatrix } from './StockMatrix';
 import { ExportButton } from './ExportButton';
 import { firstImageUrl } from '../lib/grouping';
 import { parseDescricao } from '../lib/parseDescricao';
+import { VariationValidationSummary } from './VariationValidationSummary';
+import { DirtyAfterExportBanner } from './DirtyAfterExportBanner';
 
 export function EditorScreen() {
   const activeParentCode = useStockStore((s) => s.activeParentCode);
@@ -14,6 +16,8 @@ export function EditorScreen() {
   const rows = useStockStore((s) => s.rows);
   const indexByCode = useStockStore((s) => s.indexByCode);
   const persistActive = useStockStore((s) => s.persistActive);
+  const setCurrentScreen = useStockStore((s) => s.setCurrentScreen);
+  const activeColor = useStockStore((s) => s.activeColor);
 
   const [searchVar, setSearchVar] = useState('');
 
@@ -90,6 +94,13 @@ export function EditorScreen() {
           </div>
 
           <div class="min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={() => setCurrentScreen('colors')}
+              class="mb-1 text-xs font-semibold text-blue-600 underline"
+            >
+              Voltar para cores
+            </button>
             <p class="font-mono text-xs font-semibold uppercase tracking-wide text-blue-600">
               {group.parentCode}
             </p>
@@ -101,6 +112,7 @@ export function EditorScreen() {
             <p class="mt-1 text-xs text-slate-500 md:text-sm">
               {group.childCodes.length} variações
             </p>
+            {activeColor && <p class="text-xs text-slate-500">Cor selecionada: {activeColor}</p>}
           </div>
         </div>
 
@@ -123,6 +135,8 @@ export function EditorScreen() {
       </header>
 
       <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-4 md:px-8 md:py-8">
+        <DirtyAfterExportBanner />
+        <VariationValidationSummary />
         {filteredChildren.length === 0 ? (
           <div class="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
             Nenhuma cor encontrada
