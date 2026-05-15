@@ -8,6 +8,9 @@ export function ExportButton() {
   const rows = useStockStore((s) => s.rows);
   const meta = useStockStore((s) => s.meta);
   const dirtyByParent = useStockStore((s) => s.dirtyByParent);
+  const hasBlockingVariationErrors = useStockStore((s) => s.hasBlockingVariationErrors);
+  const markExported = useStockStore((s) => s.markExported);
+  const setCurrentScreen = useStockStore((s) => s.setCurrentScreen);
 
   const totalDirty = Object.values(dirtyByParent).reduce(
     (acc, changedChildren) => acc + changedChildren.size,
@@ -19,23 +22,28 @@ export function ExportButton() {
   ).length;
 
   function handleExport() {
-    if (!meta) return;
+    if (!meta || hasBlockingVariationErrors) return;
 
     setBusy(true);
 
     try {
+      const filename = buildExportFilename();
       const blob = exportCsv(rows, meta);
-      downloadBlob(blob, buildExportFilename());
+      downloadBlob(blob, filename);
+      markExported(filename, totalDirty);
+      setCurrentScreen('export_success');
     } finally {
       setBusy(false);
     }
   }
 
+  const disabled = busy || !meta || hasBlockingVariationErrors;
+
   return (
     <button
       type="button"
       onClick={handleExport}
-      disabled={busy || !meta}
+      disabled={disabled}
       class="w-full rounded-2xl bg-blue-600 px-4 py-2.5 text-white shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50"
     >
       <span class="block text-base font-bold leading-tight">
@@ -43,7 +51,9 @@ export function ExportButton() {
       </span>
 
       <span class="mt-0.5 block text-xs font-medium leading-tight text-blue-100">
-        {totalDirty > 0
+        {hasBlockingVariationErrors
+          ? 'Corrija os erros do CSV antes de exportar.'
+          : totalDirty > 0
           ? `${totalDirty} variações alteradas em ${editedParents} produto${
               editedParents === 1 ? '' : 's'
             }`

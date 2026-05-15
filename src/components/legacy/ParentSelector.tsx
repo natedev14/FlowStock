@@ -1,6 +1,12 @@
+/**
+ * LEGACY / FUTURO:
+ * Este componente foi criado para um fluxo com múltiplos produtos pai.
+ * FlowStock v2 trabalha com 1 produto pai por CSV, por isso este componente
+ * não faz parte do fluxo ativo.
+ */
 import { useMemo } from 'preact/hooks';
-import { useStockStore } from '../store/useStockStore';
-import { firstImageUrl } from '../lib/grouping';
+import { useStockStore } from '../../store/useStockStore';
+import { firstImageUrl } from '../../lib/grouping';
 
 export function ParentSelector() {
   const groups = useStockStore((s) => s.groups);

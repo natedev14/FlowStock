@@ -2,6 +2,10 @@ import { create } from 'zustand';
 import type { CsvMeta, CsvRow, ParentGroup } from '../types';
 import { buildGroups } from '../lib/grouping';
 import { clearAllSessions, loadSession, saveSession } from '../lib/storage';
+import { validateVariations, type VariationParseReport } from '../lib/validateVariations';
+
+type ExportStatus = 'not_exported' | 'exported' | 'dirty_after_export';
+type CurrentScreen = 'colors' | 'editor' | 'export_success';
 
 interface State {
   loaded: boolean;
@@ -9,6 +13,15 @@ interface State {
   rows: CsvRow[];
   indexByCode: Map<string, number>;
   groups: ParentGroup[];
+  variationReport: VariationParseReport | null;
+  hasBlockingVariationErrors: boolean;
+
+  exportStatus: ExportStatus;
+  lastExportedAt: number | null;
+  lastExportFilename: string | null;
+  lastExportDirtyCount: number;
+  currentScreen: CurrentScreen;
+  activeColor: string | null;
 
   activeParentCode: string | null;
   search: string;
@@ -21,6 +34,11 @@ interface State {
   updateChildStock: (parentCode: string, childCode: string, newValue: string) => void;
   persistActive: () => void;
   rehydrateActive: () => void;
+
+  markExported: (filename: string, dirtyCount: number) => void;
+  setExportStatus: (status: ExportStatus) => void;
+  setCurrentScreen: (screen: CurrentScreen) => void;
+  setActiveColor: (color: string | null) => void;
 }
 
 export const useStockStore = create<State>((set, get) => ({
@@ -29,6 +47,15 @@ export const useStockStore = create<State>((set, get) => ({
   rows: [],
   indexByCode: new Map(),
   groups: [],
+  variationReport: null,
+  hasBlockingVariationErrors: false,
+
+  exportStatus: 'not_exported',
+  lastExportedAt: null,
+  lastExportFilename: null,
+  lastExportDirtyCount: 0,
+  currentScreen: 'colors',
+  activeColor: null,
 
   activeParentCode: null,
   search: '',
@@ -44,7 +71,12 @@ export const useStockStore = create<State>((set, get) => ({
     });
 
     const groups = buildGroups(rows);
-    const firstParentCode = groups[0]?.parentCode ?? null;
+    const firstGroup = groups[0];
+    // FlowStock v2 aceita 1 produto pai por CSV, então abrimos automaticamente o único grupo válido.
+    const firstParentCode = firstGroup?.parentCode ?? null;
+    const variationReport = firstGroup
+      ? validateVariations(rows, firstGroup, indexByCode)
+      : null;
 
     set({
       loaded: true,
@@ -52,6 +84,14 @@ export const useStockStore = create<State>((set, get) => ({
       rows,
       indexByCode,
       groups,
+      variationReport,
+      hasBlockingVariationErrors: (variationReport?.errors.length ?? 0) > 0,
+      exportStatus: 'not_exported',
+      lastExportedAt: null,
+      lastExportFilename: null,
+      lastExportDirtyCount: 0,
+      currentScreen: 'colors',
+      activeColor: null,
       activeParentCode: firstParentCode,
       search: '',
       dirtyByParent: {},
@@ -67,6 +107,14 @@ export const useStockStore = create<State>((set, get) => ({
       rows: [],
       indexByCode: new Map(),
       groups: [],
+      variationReport: null,
+      hasBlockingVariationErrors: false,
+      exportStatus: 'not_exported',
+      lastExportedAt: null,
+      lastExportFilename: null,
+      lastExportDirtyCount: 0,
+      currentScreen: 'colors',
+      activeColor: null,
       activeParentCode: null,
       search: '',
       dirtyByParent: {},
@@ -84,7 +132,7 @@ export const useStockStore = create<State>((set, get) => ({
   setSearch: (q) => set({ search: q }),
 
   updateChildStock: (parentCode, childCode, newValue) => {
-    const { rows, indexByCode, dirtyByParent } = get();
+    const { rows, indexByCode, dirtyByParent, exportStatus } = get();
     const idx = indexByCode.get(childCode);
     if (idx === undefined) return;
 
@@ -98,7 +146,9 @@ export const useStockStore = create<State>((set, get) => ({
     set_.add(childCode);
     dirty[parentCode] = set_;
 
-    set({ rows: newRows, dirtyByParent: dirty });
+    const nextExportStatus = exportStatus === 'exported' ? 'dirty_after_export' : exportStatus;
+
+    set({ rows: newRows, dirtyByParent: dirty, exportStatus: nextExportStatus });
     schedulePersist(parentCode);
   },
 
@@ -129,6 +179,19 @@ export const useStockStore = create<State>((set, get) => ({
 
     set({ rows: newRows, dirtyByParent: dirty });
   },
+
+  markExported: (filename, dirtyCount) =>
+    set({
+      exportStatus: 'exported',
+      lastExportedAt: Date.now(),
+      lastExportFilename: filename,
+      lastExportDirtyCount: dirtyCount,
+    }),
+
+  setExportStatus: (status) => set({ exportStatus: status }),
+
+  setCurrentScreen: (screen) => set({ currentScreen: screen }),
+  setActiveColor: (color) => set({ activeColor: color }),
 }));
 
 function sanitizeStock(raw: string): string {
